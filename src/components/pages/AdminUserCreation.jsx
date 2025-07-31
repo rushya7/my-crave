@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import './AdminUserCreation.css';
 
@@ -7,15 +7,31 @@ function AdminUserCreation() {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm();
+
+  const [submittedData, setSubmittedData] = useState(null);
+  const [submittedTime, setSubmittedTime] = useState(null);
 
   const onSubmit = (data) => {
     console.log(data);
+    setSubmittedData(data);
+    setSubmittedTime(new Date().toLocaleString());
+    reset(); // Clear the form after submission
   };
 
   return (
     <div className="form-container">
       <h1 className="form-title">Admin User Creation Page</h1>
+
+      {/* Show message after submission */}
+      {submittedData && (
+        <div className="submit-message">
+          ✅ <strong>Form submitted successfully!</strong> <br />
+          ⏰ Submitted on: <em>{submittedTime}</em>
+        </div>
+      )}
+
       <form onSubmit={handleSubmit(onSubmit)} className="admin-form">
 
         {/* Email */}
@@ -120,26 +136,11 @@ function AdminUserCreation() {
           </div>
         </div>
 
-        {/* Alternate Email */}
-        <div className="form-group">
-          <label htmlFor="emailId">Alternate Email</label>
-          <input
-            id="emailId"
-            {...register("emailId", {
-              required: "Alternate email is required",
-              pattern: {
-                value: /^\S+@\S+\.\S+$/,
-                message: "Invalid email format",
-              },
-            })}
-            placeholder="Alternate Email"
-            type="email"
-          />
-          {errors.emailId && <span className="error">{errors.emailId.message}</span>}
-        </div>
-
+        {/* Submit Button */}
         <button type="submit">Submit</button>
       </form>
+
+      
     </div>
   );
 }
